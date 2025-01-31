@@ -7,4 +7,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :confirmable, :jwt_authenticatable,
          jwt_revocation_strategy: self
+
+  belongs_to :role
+
+  def admin?
+    role.name == "admin"
+  end
 end
