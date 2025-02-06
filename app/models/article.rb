@@ -1,4 +1,5 @@
 class Article < ApplicationRecord
+  has_many :sections, dependent: :destroy
   has_one_attached :main_image
   has_one_attached :thumbnail
 
