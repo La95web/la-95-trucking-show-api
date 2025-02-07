@@ -8,6 +8,8 @@ class Ability
 
     can :read, :all
 
+    return unless user
+
     return unless user.admin?
 
     can :manage, :all
