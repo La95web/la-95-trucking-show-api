@@ -4,6 +4,6 @@ class Article < ApplicationRecord
   has_one_attached :thumbnail
 
   validates :title, presence: true, length: { in: 5..100 }
-  validates :updated_at, presence: true
-  validates :type, presence: true, inclusion: { in: %w[news tip] }
+  validates :uploaded_at, presence: true
+  validates :type, presence: true, inclusion: { in: %w[News Tip] }
 end
