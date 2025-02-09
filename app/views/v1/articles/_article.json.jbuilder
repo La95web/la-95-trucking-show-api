@@ -11,3 +11,13 @@ if article.thumbnail.attached?
 else
   json.thumbnail_url nil
 end
+
+json.sections article.sections do |section|
+  json.call(section, :id, :title, :body, :position)
+
+  if section.image.attached?
+    json.image_url url_for(section.image)
+  else
+    json.image_url nil
+  end
+end
