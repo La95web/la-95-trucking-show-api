@@ -29,6 +29,6 @@ class V1::ArticlesController < ApplicationController
   private
 
   def article_params
-    params.require(:article).permit(:title, :type, :main_image, :thumbnail)
+    params.require(:article).permit(:title, :type, :uploaded_at, :main_image, :thumbnail)
   end
 end
