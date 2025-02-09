@@ -7,7 +7,7 @@ class V1::ArticlesController < ApplicationController
 
   def create
     if @article.save
-      render status: :created
+      render :show, status: :created
     else
       render json: @article.errors, status: :unprocessable_entity
     end
