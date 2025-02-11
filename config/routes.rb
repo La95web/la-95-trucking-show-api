@@ -25,7 +25,10 @@ Rails.application.routes.draw do
     resources :podcasts
 
     resources :articles do
-      resources :sections
+      resources :sections, shallow: true
     end
+
+    resources :news
+    resources :tips
   end
 end
