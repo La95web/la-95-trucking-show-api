@@ -63,7 +63,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_13_072207) do
     t.string "title"
     t.text "description"
     t.integer "price"
-    t.boolean "featured"
+    t.boolean "featured", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["stripe_id"], name: "index_products_on_stripe_id", unique: true

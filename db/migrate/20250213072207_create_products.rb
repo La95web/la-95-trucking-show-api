@@ -5,7 +5,7 @@ class CreateProducts < ActiveRecord::Migration[8.0]
       t.string :title
       t.text :description
       t.integer :price
-      t.boolean :featured
+      t.boolean :featured, default: false
 
       t.timestamps
     end
