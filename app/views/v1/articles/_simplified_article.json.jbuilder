@@ -1,7 +1,7 @@
 json.call(article, :id, :title, :type, :uploaded_at)
 
 if article.thumbnail.attached?
-  json.thumbnail_url url_for(article.thumbnail)
+  json.thumbnail_url rails_blob_url(article.thumbnail, only_path: false)
 else
   json.thumbnail_url nil
 end
