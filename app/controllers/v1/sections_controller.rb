@@ -2,8 +2,6 @@ class V1::SectionsController < ApplicationController
   load_and_authorize_resource :article
   load_and_authorize_resource :section, through: :article
 
-  def show; end
-
   def create
     if @section.save
       render status: :created
