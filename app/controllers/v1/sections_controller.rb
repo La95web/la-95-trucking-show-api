@@ -28,6 +28,6 @@ class V1::SectionsController < ApplicationController
   private
 
   def section_params
-    params.require(:section).permit(:title, :body, :type, :main_image, :thumbnail)
+    params.require(:section).permit(:heading, :body, :image)
   end
 end
