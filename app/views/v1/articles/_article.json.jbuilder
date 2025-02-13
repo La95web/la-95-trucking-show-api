@@ -13,11 +13,5 @@ else
 end
 
 json.sections article.sections do |section|
-  json.call(section, :id, :title, :body, :position)
-
-  if section.image.attached?
-    json.image_url url_for(section.image)
-  else
-    json.image_url nil
-  end
+  json.partial! "v1/sections/section", section: section
 end
