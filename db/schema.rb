@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_07_055816) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_13_072207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,6 +56,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_07_055816) do
     t.string "video_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "stripe_id"
+    t.string "title"
+    t.text "description"
+    t.integer "price"
+    t.boolean "featured"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stripe_id"], name: "index_products_on_stripe_id", unique: true
   end
 
   create_table "roles", force: :cascade do |t|
