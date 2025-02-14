@@ -9,7 +9,7 @@ class V1::ArticlesController < ApplicationController
     if @article.save
       render :show, status: :created
     else
-      render json: @article.errors, status: :unprocessable_entity
+      render json: { error: @article.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 
@@ -17,7 +17,7 @@ class V1::ArticlesController < ApplicationController
     if @article.update(article_params)
       head :no_content
     else
-      render json: @article.errors, status: :unprocessable_entity
+      render json: { error: @article.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 

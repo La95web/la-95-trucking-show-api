@@ -9,7 +9,7 @@ class V1::TipsController < ApplicationController
     if @tip.save
       render :show, status: :created
     else
-      render json: @tip.errors, status: :unprocessable_entity
+      render json: {error: @tip.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 
@@ -17,7 +17,7 @@ class V1::TipsController < ApplicationController
     if @tip.update(tip_params)
       head :no_content
     else
-      render json: @tip.errors, status: :unprocessable_entity
+      render json: { error: @tip.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 

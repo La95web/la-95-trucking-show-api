@@ -9,7 +9,7 @@ class V1::ProductsController < ApplicationController
     if @product.save
       render :show, status: :created
     else
-      render json: @product.errors, status: :unprocessable_entity
+      render json: { error: @product.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 
@@ -17,7 +17,7 @@ class V1::ProductsController < ApplicationController
     if @product.update(product_params)
       head :no_content
     else
-      render json: @product.errors, status: :unprocessable_entity
+      render json: { error: @product.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 

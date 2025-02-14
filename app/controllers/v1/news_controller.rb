@@ -9,7 +9,7 @@ class V1::NewsController < ApplicationController
     if @news.save
       render :show, status: :created
     else
-      render json: @news.errors, status: :unprocessable_entity
+      render json: { error: @news.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 
@@ -17,7 +17,7 @@ class V1::NewsController < ApplicationController
     if @news.update(news_params)
       head :no_content
     else
-      render json: @news.errors, status: :unprocessable_entity
+      render json: { error: @news.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 

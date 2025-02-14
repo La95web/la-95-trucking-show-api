@@ -9,7 +9,7 @@ class V1::PodcastsController < ApplicationController
     if @podcast.save
       render :show, status: :created
     else
-      render json: @podcast.errors, status: :unprocessable_entity
+      render json: { error: @podcast.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 
@@ -17,7 +17,7 @@ class V1::PodcastsController < ApplicationController
     if @podcast.update(podcast_params)
       head :no_content
     else
-      render json: @podcast.errors, status: :unprocessable_entity
+      render json: { errors: @podcast.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 

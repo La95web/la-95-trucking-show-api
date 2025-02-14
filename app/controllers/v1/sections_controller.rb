@@ -1,12 +1,12 @@
 class V1::SectionsController < ApplicationController
   load_and_authorize_resource :article
-  load_and_authorize_resource :section, through: :article
+  load_and_authorize_resource :section, through: :article, shallow: true
 
   def create
     if @section.save
       render status: :created
     else
-      render json: @section.errors, status: :unprocessable_entity
+      render json: { error: @section.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 
@@ -14,7 +14,7 @@ class V1::SectionsController < ApplicationController
     if @section.update(section_params)
       head :no_content
     else
-      render json: @section.errors, status: :unprocessable_entity
+      render json: { error: @section.errors.full_messages.first }, status: :unprocessable_entity
     end
   end
 
