@@ -8,7 +8,7 @@ class User < ApplicationRecord
          :confirmable, :jwt_authenticatable,
          jwt_revocation_strategy: self
 
-  belongs_to :role
+  belongs_to :role, optional: true
 
   def admin?
     role.name == "admin"
