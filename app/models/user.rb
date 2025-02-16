@@ -11,6 +11,7 @@ class User < ApplicationRecord
   belongs_to :role, optional: true
 
   def admin?
-    role.name == "admin"
+    return role.name == "admin" unless role.nil?
+    false
   end
 end
