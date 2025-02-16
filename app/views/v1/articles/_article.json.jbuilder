@@ -1,4 +1,4 @@
-json.call(article, :id, :title, :type, :uploaded_at, :created_at, :updated_at)
+json.call(article, :id, :title, :content, :type, :uploaded_at, :created_at, :updated_at)
 
 if article.main_image.attached?
   json.main_image_url rails_blob_url(article.main_image, only_path: false)
