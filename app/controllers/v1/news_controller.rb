@@ -28,6 +28,6 @@ class V1::NewsController < ApplicationController
   private
 
   def news_params
-    params.require(:news).permit(:title, :type, :uploaded_at, :main_image, :thumbnail)
+    params.require(:news).permit(:title, :content, :type, :uploaded_at, :main_image, :thumbnail)
   end
 end

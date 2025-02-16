@@ -28,6 +28,6 @@ class V1::TipsController < ApplicationController
   private
 
   def tip_params
-    params.require(:tip).permit(:title, :type, :uploaded_at, :main_image, :thumbnail)
+    params.require(:tip).permit(:title, :content, :type, :uploaded_at, :main_image, :thumbnail)
   end
 end
