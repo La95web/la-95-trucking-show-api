@@ -29,6 +29,6 @@ class V1::PodcastsController < ApplicationController
   private
 
   def podcast_params
-    params.require(:podcast).permit(:title, :uploaded_at, :video_url, :thumbnail)
+    params.require(:podcast).permit(:title, :uploaded_at, :language, :video_url, :thumbnail)
   end
 end

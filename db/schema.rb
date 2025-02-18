@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_16_145348) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_18_194607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_16_145348) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "content"
+    t.integer "language", default: 0
   end
 
   create_table "podcasts", force: :cascade do |t|
@@ -57,6 +58,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_16_145348) do
     t.string "video_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "language", default: 0
   end
 
   create_table "products", force: :cascade do |t|
@@ -67,6 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_16_145348) do
     t.boolean "featured", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "language", default: 0
     t.index ["stripe_id"], name: "index_products_on_stripe_id", unique: true
   end
 

@@ -1,4 +1,4 @@
-json.call(product, :id, :title, :description, :featured, :stripe_id, :price, :created_at, :updated_at)
+json.call(product, :id, :title, :language, :description, :featured, :stripe_id, :price, :created_at, :updated_at)
 
 if product.main_image.attached?
   json.main_image_url rails_blob_url(product.main_image, only_path: false)
