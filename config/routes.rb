@@ -33,5 +33,7 @@ Rails.application.routes.draw do
 
     get "products/featured" => "products#featured"
     resources :products
+
+    resources :subscribers, except: %i[show update]
   end
 end
