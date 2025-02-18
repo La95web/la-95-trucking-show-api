@@ -35,5 +35,6 @@ Rails.application.routes.draw do
     resources :products
 
     resources :subscribers, except: %i[show update]
+    resources :contact_submissions, except: %i[show update]
   end
 end
