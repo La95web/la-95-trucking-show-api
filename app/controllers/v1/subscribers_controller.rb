@@ -15,8 +15,8 @@ class V1::SubscribersController < ApplicationController
   end
 
   def destroy
-    authorize! :destroy, @subscriber
     @subscriber = Subscriber.find(params[:id])
+    authorize! :destroy, @subscriber
     @subscriber.destroy
     head :no_content
   end
