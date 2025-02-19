@@ -33,3 +33,5 @@
 
 # Ignore developer notes
 notes.md
+
+/config/credentials/production.key
