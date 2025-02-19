@@ -1,0 +1,2 @@
+class Tip < Article
+end
