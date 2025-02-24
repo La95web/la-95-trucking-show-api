@@ -44,6 +44,9 @@ gem "devise-jwt"
 # Use CanCanCan for authorization [https://github.com/CanCanCommunity/cancancan/]
 gem "cancancan"
 
+# Use S3 for Active Storage [https://guides.rubyonrails.org/active_storage_overview.html#amazon-s3-service]
+gem "aws-sdk-s3", require: false
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
