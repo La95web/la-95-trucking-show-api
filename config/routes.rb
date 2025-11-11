@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
   namespace :v1 do
     resources :podcasts
+    resources :audios
 
     resources :articles do
       resources :sections, shallow: true
