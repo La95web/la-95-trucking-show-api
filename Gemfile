@@ -9,6 +9,9 @@ gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+# dotenv
+gem "dotenv-rails", groups: [ :development, :test ]
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
@@ -43,6 +46,18 @@ gem "devise-jwt"
 
 # Use CanCanCan for authorization [https://github.com/CanCanCommunity/cancancan/]
 gem "cancancan"
+
+# qrgenerator
+gem "rqrcode"
+
+# converter svg to png
+gem "chunky_png"
+
+# gem email for resend
+gem "resend"
+
+# Square SDK
+gem "square.rb", "~> 44.0.0"
 
 # Use S3 for Active Storage [https://guides.rubyonrails.org/active_storage_overview.html#amazon-s3-service]
 gem "aws-sdk-s3", require: false
