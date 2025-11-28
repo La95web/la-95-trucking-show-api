@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
   namespace :v1 do
     resources :podcasts
+    resources :audios
 
     resources :articles do
       resources :sections, shallow: true
@@ -33,6 +34,12 @@ Rails.application.routes.draw do
 
     get "products/featured" => "products#featured"
     resources :products
+    resources :marketplaces
+    resources :subscriptors, only: [ :index ]
+    get "subscriptors/:qr_id", to: "subscriptors#show"
+    get "subscriptors/:qr_id/qr.png", to: "subscriptors#qr"
+
+    post "/webhooks", to: "webhooks#receive"
 
     resources :subscribers, except: %i[show update]
     resources :contact_submissions, except: %i[show update]
