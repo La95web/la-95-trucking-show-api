@@ -30,8 +30,8 @@ class V1::WebhooksController < ApplicationController
 
     # ✅ Inicialización correcta del cliente Square
     client = SquareLegacy::Client.new(
-      access_token: ENV["SQUARE_ACCESS_TOKEN_SANDBOX"],
-      environment: "sandbox"
+      access_token: ENV["SQUARE_ACCESS_TOKEN"],
+      environment: "production"
     )
 
     case event["type"]
@@ -76,7 +76,7 @@ class V1::WebhooksController < ApplicationController
           </ul>   
           <p style="margin-top:20px; font-size:14px;">Gracias por preferirnos.</p> 
           <div style="margin-top:20px;">
-            <a href="http://localhost:3000/v1/subscriptors/#{qr_id}/qr.png" 
+            <a href="https://la-95-trucking-show-api-production.up.railway.app/v1/subscriptors/#{qr_id}/qr.png" 
               style="display:inline-block; padding:12px 20px; background-color:#007BFF; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold;">
               Abrir QR aquí
             </a>
