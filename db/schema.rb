@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_21_054842) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_12_161701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,12 +52,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_21_054842) do
     t.integer "language", default: 0
   end
 
+  create_table "audios", force: :cascade do |t|
+    t.string "title"
+    t.date "uploaded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "contact_submissions", force: :cascade do |t|
     t.string "name"
     t.string "email"
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "marketplaces", force: :cascade do |t|
+    t.string "title"
+    t.date "uploaded_at"
+    t.text "content"
+    t.integer "language"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "paragraphs"
   end
 
   create_table "podcasts", force: :cascade do |t|
@@ -220,6 +237,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_21_054842) do
 
   create_table "subscribers", force: :cascade do |t|
     t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "subscriptors", force: :cascade do |t|
+    t.string "full_name"
+    t.string "email"
+    t.string "qr_id"
+    t.integer "status"
+    t.string "square_subscription_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
