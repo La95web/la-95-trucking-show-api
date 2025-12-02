@@ -1,0 +1,2 @@
+class Doctip < Article
+end
