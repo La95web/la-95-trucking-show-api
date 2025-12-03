@@ -31,6 +31,8 @@ Rails.application.routes.draw do
 
     resources :news
     resources :tips
+    resources :trailers
+    resources :doctips
 
     get "products/featured" => "products#featured"
     resources :products
@@ -40,6 +42,7 @@ Rails.application.routes.draw do
     get "subscriptors/:qr_id/qr.png", to: "subscriptors#qr"
 
     post "/webhooks", to: "webhooks#receive"
+    resources :contacts, only: [ :create ]
 
     resources :subscribers, except: %i[show update]
     resources :contact_submissions, except: %i[show update]
