@@ -7,7 +7,7 @@ class ContactMailer < ApplicationMailer
     @message = message
 
     mail(
-      to: "luissanteliz22@gmail.com",
+      to: "la95truckingshow@gmail.com",
       subject: "Nuevo mensaje de contacto"
     )
   end
