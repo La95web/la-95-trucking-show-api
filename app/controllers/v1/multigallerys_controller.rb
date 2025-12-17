@@ -31,14 +31,14 @@ class V1::MultigallerysController < ApplicationController
     end
   end
 
+  def destroy
+    @multigallery.destroy
+    head :no_content
+  end
+
   private
 
   def multigallery_params
-    params.require(:multigallery).permit(
-      :uploaded_at,
-      video: [],
-      thumbnail: [],
-      gallery: []
-    )
+    params.require(:multigallery).permit(:uploaded_at, :poster, video: [], thumbnail: [], gallery: [])
   end
 end

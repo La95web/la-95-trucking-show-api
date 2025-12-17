@@ -1,4 +1,5 @@
 class Multigallery < ApplicationRecord
+  has_one_attached :poster
   has_many_attached :video
   has_many_attached :thumbnail
   has_many_attached :gallery
