@@ -54,7 +54,6 @@ class V1::WebhooksController < ApplicationController
         email     = recipient["email_address"]
       end
 
-
       qr_id = Subscriptor.generate_qr_id
       subscriptor = Subscriptor.create!(
         full_name: full_name,
@@ -121,7 +120,7 @@ class V1::WebhooksController < ApplicationController
 
     when "invoice.canceled"
       invoice_data = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["order_id"]
+      subscription_id = invoice_data["subscription_id"]
       subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
       if subscriptor
         subscriptor.update!(status: :canceled)
@@ -130,7 +129,7 @@ class V1::WebhooksController < ApplicationController
 
     when "invoice.refunded"
       invoice_data = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["order_id"]
+      subscription_id = invoice_data["subscription_id"]
       subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
       if subscriptor
         subscriptor.update!(status: :refunded)
