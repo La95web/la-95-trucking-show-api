@@ -41,18 +41,34 @@ class V1::WebhooksController < ApplicationController
       subscription_id = invoice_data["subscription_id"]
       customer_id     = invoice_data["primary_recipient"]["customer_id"]
 
-      response = client.customers.retrieve_customer(customer_id: customer_id)
+      recipient = invoice_data["primary_recipient"]
 
-      if response.success?
-        customer = response.data.customer
-        full_name = "#{customer["given_name"]} #{customer["family_name"]}"
-        email     = customer["email_address"]
-      else
-        Rails.logger.warn("Customer not found in Square, usando datos del webhook")
-        recipient = invoice_data["primary_recipient"]
-        full_name = "#{recipient["given_name"]} #{recipient["family_name"]}"
+      full_name = nil
+      email     = nil
+
+      if customer_id.present?
+        response = client.customers.retrieve_customer(customer_id: customer_id)
+
+        if response.success?
+          customer = response.data.customer
+          full_name = [ customer["given_name"], customer["family_name"] ].compact.join(" ").presence
+          email     = customer["email_address"].presence
+        end
+      end
+
+      if full_name.blank? || email.blank?
+        Rails.logger.warn("Customer incompleto en Square, usando primary_recipient")
+        full_name = [ recipient["given_name"], recipient["family_name"] ].compact.join(" ")
         email     = recipient["email_address"]
       end
+
+      if email.blank?
+        Rails.logger.error("Email vacío — webhook abortado")
+        return render json: { success: true }, status: :ok
+      end
+
+      existing = Subscriptor.find_by(square_subscription_id: subscription_id)
+      return render json: { success: true }, status: :ok if existing
 
       qr_id = Subscriptor.generate_qr_id
       subscriptor = Subscriptor.create!(
