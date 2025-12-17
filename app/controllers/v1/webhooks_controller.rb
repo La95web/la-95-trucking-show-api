@@ -38,14 +38,15 @@ class V1::WebhooksController < ApplicationController
     when "invoice.payment_made"
       # 👉 Mantener lógica actual para pagos exitosos
       invoice_data    = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["order_id"]
+      subscription_id = invoice_data["subscription_id"]
       customer_id     = invoice_data["primary_recipient"]["customer_id"]
 
       response = client.customers.retrieve_customer(customer_id: customer_id)
+
       if response.success?
-        customer  = response.data.customer
-        full_name = "#{customer.given_name} #{customer.family_name}"
-        email     = customer.email_address
+        customer = response.data.customer
+        full_name = "#{customer["given_name"]} #{customer["family_name"]}"
+        email     = customer["email_address"]
       else
         Rails.logger.warn("Customer not found in Square, usando datos del webhook")
         recipient = invoice_data["primary_recipient"]
@@ -119,7 +120,7 @@ class V1::WebhooksController < ApplicationController
 
     when "invoice.canceled"
       invoice_data = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["order_id"]
+      subscription_id = invoice_data["subscription_id"]
       subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
       if subscriptor
         subscriptor.update!(status: :canceled)
@@ -128,7 +129,7 @@ class V1::WebhooksController < ApplicationController
 
     when "invoice.refunded"
       invoice_data = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["order_id"]
+      subscription_id = invoice_data["subscription_id"]
       subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
       if subscriptor
         subscriptor.update!(status: :refunded)
