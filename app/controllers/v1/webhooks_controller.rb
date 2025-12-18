@@ -38,7 +38,7 @@ class V1::WebhooksController < ApplicationController
     when "invoice.payment_made"
       # 👉 Mantener lógica actual para pagos exitosos
       invoice_data    = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["subscription_id"]
+      subscription_id = invoice_data["subscription_id"] || "invoice:#{invoice_data["id"]}"
       customer_id     = invoice_data["primary_recipient"]["customer_id"]
 
       recipient = invoice_data["primary_recipient"]
@@ -136,7 +136,7 @@ class V1::WebhooksController < ApplicationController
 
     when "invoice.canceled"
       invoice_data = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["subscription_id"]
+      subscription_id = invoice_data["subscription_id"] || "invoice:#{invoice_data["id"]}"
       subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
       if subscriptor
         subscriptor.update!(status: :canceled)
@@ -145,7 +145,7 @@ class V1::WebhooksController < ApplicationController
 
     when "invoice.refunded"
       invoice_data = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["subscription_id"]
+      subscription_id = invoice_data["subscription_id"] || "invoice:#{invoice_data["id"]}"
       subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
       if subscriptor
         subscriptor.update!(status: :refunded)
