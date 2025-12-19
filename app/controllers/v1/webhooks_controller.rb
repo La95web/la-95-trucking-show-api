@@ -68,10 +68,10 @@ class V1::WebhooksController < ApplicationController
     end
 
     # Fallback solo para test events
-    if email.blank? && (Rails.env.development? || Rails.env.test?)
-      email = "luissanteliz22@gmail.com"
-      full_name = "luis santeliz"
-      Rails.looger.info("Test event: usando email y nombre de prueba")
+    if email.blank? && event["type"].start_with?("payment.") && payment["status"] == "APPROVED"
+    email = "luissanteliz22@gmail.com"
+    full_name = "louis santeliz"
+    Rails.logger.info("Fallback aplicado para test event de Square")
     end
 
     if email.blank?
