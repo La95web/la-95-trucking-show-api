@@ -35,85 +35,98 @@ class V1::WebhooksController < ApplicationController
     )
 
     case event["type"]
-    when "invoice.payment_made"
-      # 👉 Mantener lógica actual para pagos exitosos
-      invoice_data    = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["subscription_id"] || "invoice:#{invoice_data["id"]}"
-      customer_id     = invoice_data["primary_recipient"]["customer_id"]
+    when "payment.created", "payment.updated"
 
-      recipient = invoice_data["primary_recipient"]
+    payment = event["data"]["object"]["payment"]
 
-      full_name = nil
-      email     = nil
+    # 👉 Solo pagos completados
+    unless [ "COMPLETED", "APPROVED" ].include?(payment["status"])
+      Rails.logger.info("Payment ignorado con status #{payment['status']}")
+      return render json: { success: true }, status: :ok
+    end
 
-      if customer_id.present?
-        response = client.customers.retrieve_customer(customer_id: customer_id)
+    customer_id     = payment["customer_id"]
+    subscription_id = payment["subscription_id"] || "payment:#{payment['id']}"
 
-        if response.success?
-          customer = response.data.customer
-          full_name = [ customer["given_name"], customer["family_name"] ].compact.join(" ").presence
-          email     = customer["email_address"].presence
-        end
+    full_name = nil
+    email     = nil
+
+    if customer_id.present?
+      response = client.customers.retrieve_customer(customer_id: customer_id)
+
+      if response.success?
+        customer  = response.data.customer
+        full_name = [customer["given_name"], customer["family_name"]].compact.join(" ").presence
+        email     = customer["email_address"].presence
       end
+    end
 
-      if full_name.blank? || email.blank?
-        Rails.logger.warn("Customer incompleto en Square, usando primary_recipient")
-        full_name = [ recipient["given_name"], recipient["family_name"] ].compact.join(" ")
-        email     = recipient["email_address"]
-      end
+    if full_name.blank? || email.blank?
+      billing = payment["billing_details"] || {}
+      email = billing["email_address"] if email.blank?
+      full_name = billing["name"] if full_name.blank?
+    end
 
-      if email.blank?
-        Rails.logger.error("Email vacío — webhook abortado")
-        return render json: { success: true }, status: :ok
-      end
+    # Fallback solo para test events
+    if email.blank? && (Rails.env.development? || Rails.env.test?)
+      email = "luissanteliz22@gmail.com"
+      full_name = "luis santeliz"
+    end
 
-      existing = Subscriptor.find_by(square_subscription_id: subscription_id)
-      return render json: { success: true }, status: :ok if existing
+    if email.blank?
+      Rails.logger.error("Payment #{payment['id']} sin email — webhook abortado")
+      return render json: { success: true }, status: :ok
+    end
 
-      qr_id = Subscriptor.generate_qr_id
-      subscriptor = Subscriptor.create!(
-        full_name: full_name,
-        email: email,
-        qr_id: qr_id,
-        status: :active,
-        square_subscription_id: subscription_id
-      )
+    existing = Subscriptor.find_by(square_subscription_id: subscription_id)
+    return render json: { success: true }, status: :ok if existing
 
-      # ✅ Enviar correo con Resend
-      Resend.api_key = ENV["API_KEY_RESEND"]
+    qr_id = Subscriptor.generate_qr_id
+    subscriptor = Subscriptor.create!(
+      full_name: full_name,
+      email: email,
+      qr_id: qr_id,
+      status: :active,
+      square_subscription_id: subscription_id
+    )
 
-      html_content = <<~HTML
-        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; text-align: center; background-color:#f9f9f9; border:1px solid #ddd; border-radius:8px;">
-          <h2 style="color: #007BFF; margin-bottom: 20px;">Confirmación de compra</h2>
-          <p style="font-size:14px; margin:10px 0;"><strong>Subscripción ID:</strong> #{qr_id}</p>
-          <p style="font-size:14px; margin:10px 0;">Preséntalo en digital en las empresas afiliadas</p> 
-          <ul style="display:inline-block; text-align:left; font-size:13px; line-height:1.5; margin:20px auto; padding-left:20px;">
-            <li>Este código QR es la confirmación de tu compra, consérvalo contigo</li>
-            <li>Preséntalo en digital o impreso en las empresas afiliadas.</li>
-          </ul>   
-          <p style="margin-top:20px; font-size:14px;">Gracias por preferirnos.</p> 
-          <div style="margin-top:20px;">
-            <a href="https://la-95-trucking-show-api-production.up.railway.app/v1/subscriptors/#{qr_id}/qr.png" 
-              style="display:inline-block; padding:12px 20px; background-color:#007BFF; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold;">
-              Abrir QR aquí
-            </a>
-          </div>
+    Rails.logger.info("Subscriptor creado: #{subscriptor.id} / #{email} desde #{event['type']}")
+
+    # ✅ Enviar correo con Resend
+    Resend.api_key = ENV["API_KEY_RESEND"]
+
+    html_content = <<~HTML
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; text-align: center; background-color:#f9f9f9; border:1px solid #ddd; border-radius:8px;">
+        <h2 style="color: #007BFF; margin-bottom: 20px;">Confirmación de compra</h2>
+        <p style="font-size:14px; margin:10px 0;"><strong>Subscripción ID:</strong> #{qr_id}</p>
+        <p style="font-size:14px; margin:10px 0;">Preséntalo en digital en las empresas afiliadas</p> 
+        <ul style="display:inline-block; text-align:left; font-size:13px; line-height:1.5; margin:20px auto; padding-left:20px;">
+          <li>Este código QR es la confirmación de tu compra, consérvalo contigo</li>
+          <li>Preséntalo en digital o impreso en las empresas afiliadas.</li>
+        </ul>   
+        <p style="margin-top:20px; font-size:14px;">Gracias por preferirnos.</p> 
+        <div style="margin-top:20px;">
+          <a href="https://la-95-trucking-show-api-production.up.railway.app/v1/subscriptors/#{qr_id}/qr.png" 
+            style="display:inline-block; padding:12px 20px; background-color:#007BFF; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold;">
+            Abrir QR aquí
+          </a>
         </div>
-      HTML
+      </div>
+    HTML
 
-      begin
-         response = Resend::Emails.send({
-          from: "La95 Trucking Show <noreply@la95truckingshow.com>",
-          to: email,
-          subject: "Confirmación de compra - La95 Trucking Show",
-          html: html_content
-       })
-        Rails.logger.info("Correo enviado a #{response.inspect}")
-      rescue => e
-        Rails.logger.error("Error enviando correo con Resend: #{e.message}")
-      end
+    begin
+        response = Resend::Emails.send({
+        from: "La95 Trucking Show <noreply@la95truckingshow.com>",
+        to: email,
+        subject: "Confirmación de compra - La95 Trucking Show",
+        html: html_content
+      })
+      Rails.logger.info("Correo enviado a #{response.inspect}")
+    rescue => e
+      Rails.logger.error("Error enviando correo con Resend: #{e.message}")
+    end
 
-      Rails.logger.info("Webhook procesado: Subscriptor #{subscriptor.id} creado con QR #{qr_id}")
+    Rails.logger.info("Webhook procesado: Subscriptor #{subscriptor.id} creado con QR #{qr_id}")
 
     when "subscription.updated"
       sub_data = event["data"]["object"]["subscription"]
@@ -129,34 +142,18 @@ class V1::WebhooksController < ApplicationController
         else
           :canceled
         end
-
-        subscriptor.update!(status: status)
-        Rails.logger.info("Subscriptor #{subscriptor.id} actualizado: status #{status}")
+      begin
+      subscriptor.update!(status: status)
+      Rails.logger.info("Subscriptor #{subscriptor.id} actualizado: status #{status}")
+      rescue => e
+        Rails.looger.error("Error actualizado Subscriptor #{subscriptor.id}: #{e.message}")
       end
 
-    when "invoice.canceled"
-      invoice_data = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["subscription_id"] || "invoice:#{invoice_data["id"]}"
-      subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
-      if subscriptor
-        subscriptor.update!(status: :canceled)
-        Rails.logger.info("Subscriptor #{subscriptor.id} marcado como cancelado por invoice.canceled")
+      else
+        # 👉 Ignorar otros eventos
+        return render json: { ignored: true }, status: :ok
       end
-
-    when "invoice.refunded"
-      invoice_data = event["data"]["object"]["invoice"]
-      subscription_id = invoice_data["subscription_id"] || "invoice:#{invoice_data["id"]}"
-      subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
-      if subscriptor
-        subscriptor.update!(status: :refunded)
-        Rails.logger.info("Subscriptor #{subscriptor.id} marcado como reembolsado")
-      end
-
-    else
-      # 👉 Ignorar otros eventos
-      return render json: { ignored: true }, status: :ok
+      render json: { success: true }, status: :ok
     end
-
-    render json: { success: true }, status: :ok
   end
 end
