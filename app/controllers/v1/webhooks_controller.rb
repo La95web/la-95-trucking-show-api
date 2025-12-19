@@ -71,6 +71,7 @@ class V1::WebhooksController < ApplicationController
     if email.blank? && (Rails.env.development? || Rails.env.test?)
       email = "luissanteliz22@gmail.com"
       full_name = "luis santeliz"
+      Rails.looger.info("Test event: usando email y nombre de prueba")
     end
 
     if email.blank?
