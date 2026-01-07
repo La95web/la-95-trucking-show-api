@@ -1,0 +1,2 @@
+class Documentvideo < Article
+end

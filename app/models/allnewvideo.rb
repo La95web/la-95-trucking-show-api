@@ -1,0 +1,2 @@
+class Allnewvideo < Article
+end
