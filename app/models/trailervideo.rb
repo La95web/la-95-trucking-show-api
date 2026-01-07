@@ -1,0 +1,2 @@
+class Trailervideo < Article
+end
