@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     resources :tips
     resources :trailers
     resources :doctips
+    resources :trailervideos
 
     get "products/featured" => "products#featured"
     resources :products
