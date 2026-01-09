@@ -24,8 +24,6 @@ Rails.application.routes.draw do
   namespace :v1 do
     resources :podcasts
     resources :audios
-    resources :multigallerys
-    resources :softball2024s
 
     resources :articles do
       resources :sections, shallow: true
@@ -39,6 +37,7 @@ Rails.application.routes.draw do
     resources :tractorvideos
     resources :documentvideos
     resources :allnewvideos
+    resources :truckers
 
     get "products/featured" => "products#featured"
     resources :products
