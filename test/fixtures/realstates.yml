@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  price: MyString
+  rooms: MyText
+  location: MyString
+  internet: MyString
+  parking: MyString
+  furniture: MyText
+  description: MyText
+  uploaded_at: 2026-01-12
+  language: 1
+
+two:
+  price: MyString
+  rooms: MyText
+  location: MyString
+  internet: MyString
+  parking: MyString
+  furniture: MyText
+  description: MyText
+  uploaded_at: 2026-01-12
+  language: 1
