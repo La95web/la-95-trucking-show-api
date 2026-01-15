@@ -1,4 +1,4 @@
-class Trucker < ApplicationRecord
+class Distpacher < ApplicationRecord
   enum :language, %i[spanish english]
 
   has_one_attached :main_image
@@ -11,5 +11,5 @@ class Trucker < ApplicationRecord
   validates :experience, length: { maximum: 20 }, allow_blank: true
   validates :requirements, length: { maximum: 500 }, allow_blank: true
   validates :qualities, length: { maximum: 15 }, allow_blank: true
-  validates :language, inclusion: { in: Trucker.languages.keys }
+  validates :language, inclusion: { in: Distpacher.languages.keys }
 end
