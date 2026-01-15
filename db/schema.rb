@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_09_171531) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_13_193658) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -74,6 +74,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_09_171531) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "distpachers", force: :cascade do |t|
+    t.string "company"
+    t.text "description"
+    t.string "location"
+    t.string "salary"
+    t.string "experience"
+    t.text "requirements"
+    t.text "qualities"
+    t.date "uploaded_at"
+    t.integer "language", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "marketplaces", force: :cascade do |t|
     t.string "title"
     t.date "uploaded_at"
@@ -89,6 +103,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_09_171531) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
+  end
+
+  create_table "owners", force: :cascade do |t|
+    t.string "company"
+    t.text "description"
+    t.string "location"
+    t.string "salary"
+    t.string "experience"
+    t.text "qualities"
+    t.date "uploaded_at"
+    t.integer "language", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "podcasts", force: :cascade do |t|
@@ -110,6 +137,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_09_171531) do
     t.datetime "updated_at", null: false
     t.integer "language", default: 0
     t.index ["stripe_id"], name: "index_products_on_stripe_id", unique: true
+  end
+
+  create_table "realstates", force: :cascade do |t|
+    t.string "price"
+    t.text "rooms"
+    t.string "location"
+    t.string "internet"
+    t.string "parking"
+    t.text "furniture"
+    t.text "description"
+    t.date "uploaded_at"
+    t.integer "language", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "roles", force: :cascade do |t|

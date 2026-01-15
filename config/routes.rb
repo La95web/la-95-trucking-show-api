@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :v1 do
+    get "realstates/index"
     resources :podcasts
     resources :audios
 
@@ -38,6 +39,9 @@ Rails.application.routes.draw do
     resources :documentvideos
     resources :allnewvideos
     resources :truckers
+    resources :owners
+    resources :realstates
+    resources :distpachers
 
     get "products/featured" => "products#featured"
     resources :products
