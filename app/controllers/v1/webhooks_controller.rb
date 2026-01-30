@@ -67,16 +67,18 @@ class V1::WebhooksController < ApplicationController
       full_name = billing["name"] if full_name.blank?
     end
 
-    # Fallback solo para test events
-    if email.blank? && event["type"].start_with?("payment.") && payment["status"] == "APPROVED"
-    email = "luissanteliz22@gmail.com"
-    full_name = "louis santeliz"
-    Rails.logger.info("Fallback aplicado para test event de Square")
-    end
-
     if email.blank?
       Rails.logger.error("Payment #{payment['id']} sin email — webhook abortado")
       return render json: { success: true }, status: :ok
+    end
+
+    # 👉 Si es un pago recurrente, NO crear nuevo subscriptor
+    if payment["subscription_id"].present?
+      existing = Subscriptor.find_by(square_subscription_id: payment["subscription_id"])
+      if existing
+        Rails.logger.info("Pago recurrente ignorado para subscription #{payment['subscription_id']}")
+        return render json: { success: true }, status: :ok
+      end
     end
 
     existing = Subscriptor.find_by(square_subscription_id: subscription_id)
@@ -130,30 +132,36 @@ class V1::WebhooksController < ApplicationController
     Rails.logger.info("Webhook procesado: Subscriptor #{subscriptor.id} creado con QR #{qr_id}")
 
     when "subscription.updated"
-      sub_data = event["data"]["object"]["subscription"]
-      subscription_id = sub_data["id"]
+      subscription = event["data"]["object"]["subscription"]
+      subscription_id = subscription["id"]
+      square_status   = subscription["status"]
+
       subscriptor = Subscriptor.find_by(square_subscription_id: subscription_id)
 
-      if subscriptor && sub_data["canceled_date"].present?
-        canceled_date = Date.parse(sub_data["canceled_date"])
-        today = Date.today
+      unless subscriptor
+        Rails.logger.info("Subscription #{subscription_id} no encontrada")
+        return render json: { success: true }, status: :ok
+      end
 
-        status = if canceled_date > today
-          :scheduled_cancellation
-        else
+      mapped_status =
+        case square_status
+        when "ACTIVE"
+          :active
+        when "CANCELED"
           :canceled
+        when "PAUSED"
+          :paused
+        when "DEACTIVATED"
+          :canceled
+        else
+          :inactive
         end
-      begin
-      subscriptor.update!(status: status)
-      Rails.logger.info("Subscriptor #{subscriptor.id} actualizado: status #{status}")
-      rescue => e
-        Rails.looger.error("Error actualizado Subscriptor #{subscriptor.id}: #{e.message}")
-      end
 
-      else
-        # 👉 Ignorar otros eventos
-        return render json: { ignored: true }, status: :ok
-      end
+      subscriptor.update!(status: mapped_status)
+
+      Rails.logger.info(
+        "Subscriptor #{subscriptor.id} actualizado → Square: #{square_status}"
+      )
       render json: { success: true }, status: :ok
     end
   end
