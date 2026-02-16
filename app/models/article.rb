@@ -9,8 +9,8 @@ class Article < ApplicationRecord
 
   validates :title, length: { in: 5..100 }, allow_blank: true
   validates :titlevideo, length: { maximum: 100 }, allow_blank: true
-  validates :description, length: { maximum: 255 }, allow_blank: true
-  validates :content, length: { maximum: 700 }
+  validates :description, length: { maximum: 260 }, allow_blank: true
+  validates :content, length: { maximum: 3000 }
   validates :uploaded_at, presence: true
   validates :type, presence: true, inclusion: { in: %w[News Tip Trailer Doctip Trailervideo Tractorvideo Documentvideo Allnewvideo] }
   validates :language, inclusion: { in: Article.languages.keys }
