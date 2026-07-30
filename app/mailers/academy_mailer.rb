@@ -5,7 +5,7 @@ class AcademyMailer < ApplicationMailer
     @registration = registration
 
     mail(
-      to: "luissanteliz22@gmail.com",
+      to: "la95truckingshow@gmail.com",
       subject: "🔥 Nuevo prospecto para el curso de camioneros'"
     )
   end
