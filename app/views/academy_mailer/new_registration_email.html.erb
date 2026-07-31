@@ -1,0 +1,14 @@
+<div style="font-family: Arial, sans-serif; color: #333;">
+  <h2 style="color: #dd2e44;">¡Tienes un nuevo registro en la Academia!</h2>
+  <p>Un usuario acaba de registrarse interesándose por el curso de camioneros. Aquí están sus datos para que lo contactes:</p>
+  
+  <ul style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; list-style-type: none;">
+    <li style="margin-bottom: 10px;"><strong>Nombre Completo:</strong> <%= @registration.full_name %></li>
+    <li style="margin-bottom: 10px;"><strong>Email:</strong> <%= @registration.email %></li>
+    <li style="margin-bottom: 10px;"><strong>Teléfono:</strong> <%= @registration.phone %></li>
+    <li style="margin-bottom: 10px;"><strong>¿Tiene CDL?:</strong> <%= @registration.has_cdl.capitalize %></li>
+    <li style="margin-bottom: 10px;"><strong>Experiencia de manejo:</strong> <%= @registration.driving_experience %></li>
+  </ul>
+  
+  <p>¡Ponte en contacto lo antes posible para cerrar la venta!</p>
+</div>

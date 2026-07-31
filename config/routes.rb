@@ -52,6 +52,7 @@ Rails.application.routes.draw do
 
     post "/webhooks", to: "webhooks#receive"
     resources :contacts, only: [ :create ]
+    resources :academy_registrations, only: [ :create ]
 
     resources :subscribers, except: %i[show update]
     resources :contact_submissions, except: %i[show update]
