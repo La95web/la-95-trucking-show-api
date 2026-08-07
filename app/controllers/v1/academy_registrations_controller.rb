@@ -8,6 +8,8 @@ class V1::AcademyRegistrationsController < ApplicationController
     if @academy_registration.save
       AcademyMailer.new_registration_email(@academy_registration).deliver_now
 
+      AcademyMailer.welcome_email(@academy_registration).deliver_now
+
       render json: @academy_registration, status: :created
     else
       render json: { error: @academy_registration.errors.full_messages.first }, status: :unprocessable_entity
